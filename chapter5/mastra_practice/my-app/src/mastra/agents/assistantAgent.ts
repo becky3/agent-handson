@@ -1,11 +1,11 @@
 import { Agent } from "@mastra/core/agent";
-import { bedrock } from "@ai-sdk/amazon-bedrock";
+import { getBedrockModel } from "../../../lib/aws-config";
 
-// エージェント定義
+const model = await getBedrockModel();
+
 export const assistantAgent = new Agent({
-    name: "assistant",
-    instructions: "あなたは親切で知識豊富なAIアシスタントです。ユーザーの質問に対して、わかりやすく丁寧に回答してください。",
-    model: bedrock("us.anthropic.claude-3-7-sonnet-20250219-v1:0"),
+  name: "assistant",
+  instructions:
+    "あなたは親切で知識豊富なAIアシスタントです。ユーザーの質問に対して、わかりやすく丁寧に回答してください。必要に応じてGitHubツールを使用してイシューの作成を行うことができます。",
+  model: model,
 });
-
-
