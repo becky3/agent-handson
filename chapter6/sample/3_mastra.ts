@@ -28,6 +28,7 @@ const writer = new Agent({
   model: bedrock('us.anthropic.claude-sonnet-4-20250514-v1:0'),
 });
 
+/*
 // エージェントネットワークを作成
 const network = new NewAgentNetwork({
   id: 'report-network',
@@ -43,3 +44,4 @@ export const mastra = new Mastra({
   agents: {lister, writer},
   vnext_networks: {network}
 });
+*/
