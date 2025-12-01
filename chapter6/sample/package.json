@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "@ai-sdk/amazon-bedrock": "^3.0.13",
+    "@mastra/core": "^0.15.2",
+    "@mastra/libsql": "^0.16.3",
+    "@mastra/memory": "^0.15.12",
+    "mastra": "^0.11.3"
+  },
+  "name": "sample",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "@types/node": "^20.19.25",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
