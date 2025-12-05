@@ -6,10 +6,11 @@ async def send_event(queue, message, stage, tool_name=None):
         return
     
     progress = {"message": message, "stage": stage}
-    event = {"event": {"subAgentProgress": progress}}
     if tool_name:
-        progress["toolName"] = tool_name
-    await queue.put(event)
+        progress["tool_name"] = tool_name
+    await queue.put(
+        {"event": {"subAgentProgress": progress}}
+    )
 
 async def merge_streams(stream, queue):
     """親子エージェントのストリームを統合"""
@@ -17,16 +18,15 @@ async def merge_streams(stream, queue):
     main = create_task(anext(stream, None))
     sub = create_task(queue.get())
     waiting = {main, sub}
-
+    
     # チャンクの到着を待機
     while waiting:
         ready_chunks, waiting = await asyncio.wait(
             waiting, return_when=asyncio.FIRST_COMPLETED
         )
-
         for ready_chunk in ready_chunks:
-            # メインエージェントのチャンク処理
-            if ready_chunk is main:
+            # 監督者エージェントのチャンクを処理
+            if ready_chunk == main:
                 event = ready_chunk.result()
                 if event is not None:
                     yield event
@@ -34,9 +34,9 @@ async def merge_streams(stream, queue):
                     waiting.add(main)
                 else:
                     main = None
-
-            # サブエージェントのチャンク処理
-            elif ready_chunk is sub:
+            
+            # サブエージェントのチャンクを処理
+            elif ready_chunk == sub:
                 try:
                     sub_event = ready_chunk.result()
                     yield sub_event
@@ -44,9 +44,6 @@ async def merge_streams(stream, queue):
                     waiting.add(sub)
                 except Exception:
                     sub = None
-
+        
         if main is None and queue.empty():
             break
-
-
-

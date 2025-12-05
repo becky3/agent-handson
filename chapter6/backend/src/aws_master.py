@@ -31,14 +31,14 @@ def _create_agent():
         return None
     return Agent(
         model="us.anthropic.claude-3-7-sonnet-20250219-v1:0",
-        tools=[_state.client.list_tools_async()]
+        tools=_state.client.list_tools_sync()
     )
 
 @tool
 async def aws_master(query):
     """AWSマスターエージェント"""
     if not _state.client:
-        return "MCPクライアウントが利用不可です"
+        return "MCPクライアントが利用不可です"
     return await invoke(
         "AWSマスター", query, _state.client,
         _create_agent, _state.queue

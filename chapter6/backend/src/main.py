@@ -15,31 +15,31 @@ def _create_orchestrator():
 2. APIマスター：AWSアカウントをAPIで操作できます。"""
     )
 
-# アプリケーションの初期化
+# アプリケーションを初期化
 app = BedrockAgentCoreApp()
-orchestrator=_create_orchestrator()
+orchestrator = _create_orchestrator()
 
-@app.entrypoint()
+@app.entrypoint
 async def invoke(payload):
-    """呼び出し処理開始地点"""
+    """呼び出し処理の開始地点"""
     prompt = payload.get("input", {}).get("prompt", "")
-
+    
     # サブエージェント用のキューを初期化
     queue = asyncio.Queue()
     setup_aws_master(queue)
     setup_api_master(queue)
-
+    
     try:
         # 監督者エージェントを呼び出し、ストリームを統合
         stream = orchestrator.stream_async(prompt)
         async for event in merge_streams(stream, queue):
             yield event
-    
+            
     finally:
         # キューをクリーンアップ
         setup_aws_master(None)
-        setup_api_master(None)  
+        setup_api_master(None)
 
-# APIサーバー起動
+# APIサーバーを起動
 if __name__ == "__main__":
     app.run()
